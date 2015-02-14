@@ -1,6 +1,5 @@
 import os
 import zipfile
-import urllib.request
 def mkdir(path):
 	"""
 	Make the dir if path not exist.
@@ -45,5 +44,3 @@ def zipFolder(path):
 	for item in filePathList:
 		# print(item)
 		z.write(item,item.split('/')[-1])
-def txtformat(path):
-	pass
