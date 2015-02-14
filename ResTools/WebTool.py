@@ -1,7 +1,33 @@
 from bs4 import BeautifulSoup
 import urllib.request, urllib.parse, urllib.error,http.cookiejar,gzip
+import re
 # from http.client import HTTPConnection
 # HTTPConnection.debuglevel = 1  
+
+def Replace_Char(x):
+	# 用非 贪婪模式 匹配 \t 或者 \n 或者 空格 或者 超链接 或者 图片
+	BgnCharToNoneRex = re.compile("(\t|\n| |<a.*?>|<img.*?>)")
+
+	# 用非 贪婪模式 匹配 任意<>标签
+	EndCharToNoneRex = re.compile("<.*?>")
+
+	# 用非 贪婪模式 匹配 任意<p>标签
+	BgnPartRex = re.compile("<p.*?>")
+	CharToNewLineRex = re.compile("(<br/>|</p>|<tr>|<div>|</div>)")
+	CharToNextTabRex = re.compile("<td>")
+
+	# 将一些html的符号实体转变为原始符号
+	replaceTab = [("<","<"),(">",">"),("&","&"),("&","\""),(" "," ")]
+	x = BgnCharToNoneRex.sub("",x)
+	x = BgnPartRex.sub("\n    ",x)
+	x = CharToNewLineRex.sub("\n",x)
+	x = CharToNextTabRex.sub("\t",x)
+	x = EndCharToNoneRex.sub("",x)
+
+	for t in replaceTab:  
+		x = x.replace(t[0],t[1])  
+	return x 
+
 def Opener(cookie=""):
 	head = {
 	'Connection': 'Keep-Alive',
@@ -16,8 +42,8 @@ def Opener(cookie=""):
 	opener = urllib.request.build_opener()
 	header = []
 	for key, value in head.items():
-	    elem = (key, value)
-	    header.append(elem)
+		elem = (key, value)
+		header.append(elem)
 	opener.addheaders = header
 	return opener
 def OpenURL(URL,decode=False):

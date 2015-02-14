@@ -1,0 +1,194 @@
+<!-- saved from url=(0034)http://www.nongminw.cn/paiban.html -->
+<html>
+  
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>
+      最好用的在线排版工具|一键排版工具
+    </title>
+    <meta name="keywords" content="在线排版，在线编辑，在线排版工具,文本在线编辑，一键排版工具，专业排版工具，自动排版工具">
+    <meta name="description" content="在线排版工具，一键排版工具，专业排版工具，自动排版工具，一键排版轻松搞定">
+    <link href="./paiban/main.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+      <!-- * { font-family:宋体; font-size:12px; padding:0px; margin:0px; } body{margin:0px;border:0px;
+      background-color:#FFF} .option {margin:0px 0px 0px 7px;float:right;font-size:12px;}
+      .option a{ font-size:12px;color:blue; text-decoration : underline; } .bt
+      { font-size: 18px;font-family:微软雅黑; color: #F00; } -->
+    </style>
+    <script type="text/javascript" async="" src="./paiban/flag.js">
+    </script>
+    <script type="text/javascript" async="" src="./paiban/jquery-highcharts.js">
+    </script>
+    <script src="./paiban/sf_main.jsp">
+    </script>
+    <script type="text/javascript" src="./paiban/sf_preloader.jsp">
+    </script>
+    <script type="text/javascript" src="./paiban/sf_code.jsp">
+    </script>
+    <script type="text/javascript" src="./paiban/main.js">
+    </script>
+    <script type="text/javascript" src="./paiban/main(1).js">
+    </script>
+    <script type="text/javascript" src="./paiban/base_single_icon.js">
+    </script>
+  </head>
+  
+  <body onunload="javascript:gt.saveOption();" onkeydown="KeyDown();" onresize="javascript:resize();"
+  style="margin:8px;" youdao="bind">
+    <center>
+      <table width="800" border="0">
+        <tr>
+          <td valign="top">
+            <div style="height:80%;">
+              <div style="" id="gtform">
+                <div class="line">
+                </div>
+                <div id="toolbar" style="width:100%;text-align:right;">
+                  <div style="float:right;">
+                    <a href="javascript:void(0);" onclick="javascript:run();" id="button">
+                      <img border="0" src="./paiban/0.gif" style="margin: 1px 2px 4px 4px; display: none;"
+                      id="sbi_0">
+                      <img border="0" src="./paiban/1.gif" style="margin: 1px 2px 4px 4px;"
+                      id="sbi_1" onmouseover="showButtonImg(2);">
+                      <img border="0" src="./paiban/2.gif" style="margin: 1px 2px 4px 4px; display: none;"
+                      id="sbi_2" onmouseout="showButtonImg(1);">
+                    </a>
+                    <!-- <input type="button" id="button" name="" value="开始排版" style="width:90px;height:45px;font-size:14px;margin-bottom:6px;"
+                    onfocus="" />
+                    -->
+                  </div>
+                  <div style="" class="option">
+                    <div style="margin:1px 3px 0px 6px;">
+                      <input type="checkbox" id="xx_bd">
+                      <label for="xx_bd">
+                        标点修正
+                      </label>
+                      <input type="checkbox" id="xx_blx" checked="">
+                      <label for="xx_blx">
+                        波浪线修正
+                      </label>
+                      |
+                      <select id="linespaceSelect">
+                        <option value="1">
+                          段落间无空行
+                        </option>
+                        <option value="2" selected="">
+                          段落间空一行
+                        </option>
+                        <option value="3">
+                          段落间空两行
+                        </option>
+                        <option value="0">
+                          不调整空行
+                        </option>
+                      </select>
+                      &nbsp;
+                      <select id="fstStringSelect" onchange="javascript:showfstStringSpan()">
+                        <option value="1">
+                          不调整段落缩进
+                        </option>
+                        <option value="2" selected="">
+                          缩进:全角×2
+                        </option>
+                        <option value="3">
+                          缩进:半角×4
+                        </option>
+                        <option value="4">
+                          删首尾空格
+                        </option>
+                        <option value="0">
+                          自定义缩进
+                        </option>
+                      </select>
+                      &nbsp;
+                      <span id="fstStringSpan" style="display: none;">
+                        <input type="text" value="　　" id="fstString" style="width:30px;">
+                        &nbsp;
+                      </span>
+                      <select id="cs2ctSelect">
+                        <option value="0" selected="">
+                          无繁简转换
+                        </option>
+                        <option value="1">
+                          简体字
+                        </option>
+                        <option value="2">
+                          大陆简体
+                        </option>
+                        <option value="3">
+                          新加坡简体
+                        </option>
+                        <option value="4">
+                          正體中文
+                        </option>
+                        <option value="5">
+                          臺灣正體
+                        </option>
+                        <option value="6">
+                          香港正體
+                        </option>
+                      </select>
+                    </div>
+                    <div style="margin:3px 6px 0px 6px;">
+                      <a href="javascript:void(0);" style="color:#999999;" onclick="javascript:gt.clear();">
+                        清空文本
+                      </a>
+                      | 全角与半角:
+                      <input type="radio" name="quanjiao" value="0" id="quanjiao_no" style="margin-top:4px;"
+                      checked="">
+                      <label for="quanjiao_no">
+                        不转换
+                      </label>
+                      <input type="radio" name="quanjiao" value="1" id="quanjiao_q" style="margin-top:4px;">
+                      <label for="quanjiao_q">
+                        到全角
+                      </label>
+                      <input type="radio" name="quanjiao" value="2" id="quanjiao_b" style="margin-top:4px;">
+                      <label for="quanjiao_b">
+                        到半角
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <textarea name="text" id="textbox" style="width: 100%; height: 588px; padding: 2px 2px 2px 2px; line-height: 140%; background-color: rgb(246, 246, 246); margin-bottom: 2px; border: 1px solid gray;">
+                </textarea>
+                <div style="float:right;">
+                  <input type="checkbox" id="selectall" checked="">
+                  <label for="selectall">
+                    排版后全选
+                  </label>
+                </div>
+              </div>
+              <div class="line">
+              </div>
+              <span id="msg">
+                <span style="color:#666666">
+                  就绪!
+                </span>
+                <script src="./paiban/urchin.js" type="text/javascript">
+                </script>
+                <script type="text/javascript">
+                  _uacct = "UA-424343-9";
+                  urchinTracker();
+                </script>
+              </span>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </center>
+    <script language="javascript" type="text/javascript" src="./paiban/main(2).js">
+    </script>
+    <script language="javascript" type="text/javascript" src="./paiban/gt.js">
+    </script>
+    <script language="javascript" type="text/javascript" src="./paiban/b2q.js">
+    </script>
+    <script language="javascript" type="text/javascript" src="./paiban/zh2l.js">
+    </script>
+    <script language="javascript" type="text/javascript" src="./paiban/zh2Hant.js">
+    </script>
+    <script language="javascript" type="text/javascript" src="./paiban/zh2Hans.js">
+    </script>
+  </body>
+
+</html>
