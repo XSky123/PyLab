@@ -23,7 +23,7 @@ class UI:
 				optionTXT += nbsp
 				if count % 5 == 0 and count != len(options):# 5 Files Per Line
 					optionTXT += "\n"
-			else:#纵向排版
+			else:#横向排版
 				optionTXT += "[" + str(count) + "] " + item
 				if count<len(options):
 					optionTXT += "\n"
@@ -42,7 +42,6 @@ class UI:
 			else:
 				print ("* —— 等等，好像不对...")
 		print("*------------------------------------------------------------")
-
 	def drawline(self):
 		print("*------------------------------------------------------------")
 def mkdir(path):

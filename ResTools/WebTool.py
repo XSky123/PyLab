@@ -1,3 +1,13 @@
+"""
+*------------------------------------------------------------ 
+* Model : WebTool 
+* Version : 1.2
+* Designer : XSky123
+*
+* About URL,Page...
+* 伦家会努力让你喜欢的～喵～～
+*------------------------------------------------------------
+"""
 from bs4 import BeautifulSoup
 import urllib.request, urllib.parse, urllib.error,http.cookiejar,gzip
 import re

@@ -2,30 +2,16 @@ from WebTool import *
 from FileTool import *
 import time,os
 import re
+UI = UI()
 def welcome():
 	print ("""*------------------------------------------------------------ 
 * Programe : 贴吧萌萌哒(CuteTieba) 
-* Version : Preview 1
+* Version : 1.0
 * Designer : XSky123
 *
 * I hope you enjoy this Programe! 
 * 伦家会努力让你喜欢的～喵～～
 *------------------------------------------------------------""")
-def memu():
-	tmp=" "
-	print("* —— Hi！有什么吩咐？")
-	while True:
-		print("""* —— 我想想哈（选哪个好呢）
-	[1] 美图美美哒
-	[2] 文字萌萌哒""")
-		tmp=input("* —— 好啦，我选:")
-		if tmp.isdigit() and int(tmp)==1:
-			return 1
-		elif tmp.isdigit() and int(tmp)==2:
-			return 2
-		else:
-			print ("* —— 等等，好像不对...")
-	print("*------------------------------------------------------------")
 class CuteTieba:
 	# initialize
 	def __init__(self,postID):
@@ -135,7 +121,8 @@ welcome()
 while (True):
 	postID = input('Enter ID:')
 	#str(postID) has been added in __init__()
-	if(memu()==1):
+	print("* 请选择类别")
+	if(UI.memu(["美图美美哒","文字萌萌哒"])==1):
 		cutetieba = CuteTieba(postID)
 		cutetieba.CuteImg()
 	else:
