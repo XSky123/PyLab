@@ -2,7 +2,7 @@
 """
 *------------------------------------------------------------ 
 * Model : FileTool 
-* Version : 1.4.1
+* Version : 1.6.1
 * Designer : XSky123
 *
 * About UI,FileIO,zip...
@@ -28,9 +28,9 @@ class UI:
 				if count<len(options):
 					optionTXT += "\n"
 			count += 1
+		print("* —— 我想想哈（选哪个好呢）")
+		print (optionTXT)
 		while True:
-			print("* —— 我想想哈（选哪个好呢）")
-			print (optionTXT)
 			#if version = 2.x
 			if sys.version_info.major == 2:
 				tmp = raw_input("* —— 好啦，我选:")
@@ -42,7 +42,20 @@ class UI:
 			else:
 				print ("* —— 等等，好像不对...")
 		print("*------------------------------------------------------------")
-
+	def memu2(self,options):
+		count = len(options) + 1
+		while True:
+			#if version = 2.x
+			if sys.version_info.major == 2:
+				tmp = raw_input("* —— 好啦，我选:")
+			#if version = 3.x
+			else:
+				tmp = input("* —— 好啦，我选:")
+			if tmp.isdigit() and int(tmp)>0 and int(tmp)<count:
+				return int(tmp)
+			else:
+				print ("* —— 等等，好像不对...")
+		print("*------------------------------------------------------------")
 	def drawline(self):
 		print("*------------------------------------------------------------")
 def mkdir(path):
@@ -51,14 +64,23 @@ def mkdir(path):
 	Because Linux cannot make the whole path for a time,
 	use this could solve the problem.
 	"""
-	myPath = path.split('/')
-	for i in range(1,len(myPath)):
-		myPath[i] = myPath[i-1] + '/' + myPath[i]
-	for addr in myPath:
-		if os.path.isdir(addr): 
-			pass 
-		else: 
-			os.mkdir(addr)
+	if os.path.exists(path): 
+		pass 
+	else: 
+		os.makedirs(path)
+	# myPath = path.split('/')
+	# for i in range(1,len(myPath)):
+	# 	myPath[i] = myPath[i-1] + '/' + myPath[i]
+	# 	# print("[path]"+myPath[i])
+	# del myPath[0]#delete the first path
+	# for addr in myPath:
+	# 	print("[Now Addr]"+ addr)
+	# 	if os.path.isdir(addr): 
+	# 		# print(addr)
+	# 		pass 
+	# 	else: 
+	# 		print("[md]"+addr)
+	# 		os.mkdir(addr)
 def ls(path):
 	"""
 	Get files list in complated path

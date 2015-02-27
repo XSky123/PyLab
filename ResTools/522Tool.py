@@ -8,7 +8,7 @@ import re
 import queue,threading
 import sys
 __PROGRAM_TITLE__="FiveTwenty-two Tool"
-__VER__="v2.4"
+__VER__="v2.6"
 __AUTHOR__="XSky123"
 __ADDR__="http://www.522yw.cc"
 __SAVE_MULU__="522yw"
@@ -89,44 +89,49 @@ def fetchlist(type_id,page=1):
 	for item in lst_original:
 		lst.append([re.findall('href="(.*?)"',item,re.S)[0].strip(),re.findall('target=_blank>(.*?)</A>',item,re.S)[0].strip(),re.findall('0>(.*?)</FONT>',item,re.S)[0].strip()])
 		# ===FETCH===
-	while(1):
-		begin=(count-1)*__ITEM_ONE_TIME__
-		if(count*__ITEM_ONE_TIME__>len(lst)):# ===IF MORE THAN THE LENGTH,CUT THEM===
-			end=len(lst)
-		else:
-			end=count*__ITEM_ONE_TIME__
-		line()
-		for x in range(begin,end):
-			print("[ID]",x+1)
-			print("[DATE]",lst[x][2])
-			print("[URL]",lst[x][0])
-			print("[TITLE]",lst[x][1])
-			line()
+	tmp = input("[INFO]Add The Whole List? [ENTER] to begin! or other key to next")
+	if tmp == "":
+		for x in lst:
+			lst_save.append([x[0],type_id])
+	else:
 		while(1):
-			tmp=input("[INFO]Enter the id you'd like to save,[Q] to quit,[Other] to continue:")
-			if(tmp.isdigit()):
-				savedURLid=int(tmp)
-				if(savedURLid>begin and savedURLid<=end):
-					try:
-						if(lst_save.index(lst[savedURLid-1][0])>=0):
-							print("[ERROR]",lst[savedURLid-1][1],"has already added")
-					except:
-						lst_save.append([lst[savedURLid-1][0],type_id])
-						print("[ADD]",lst[savedURLid-1][1])
-				else:
-					print("[ERROR]Wrong ID!")
+			begin=(count-1)*__ITEM_ONE_TIME__
+			if(count*__ITEM_ONE_TIME__>len(lst)):# ===IF MORE THAN THE LENGTH,CUT THEM===
+				end=len(lst)
 			else:
-				if(tmp.lower()=="q"):
-					count=len(lst)/__ITEM_ONE_TIME__
-				break
-		count+=1
-		if(len(lst)%__ITEM_ONE_TIME__==0):# ===IF JUST OK,Compare Length;or minus one before compare ===
-		# === E.g When [len(lst)] is 30 but [__ITEM_ONE_TIME__] is 20 Then count++ means it get to 40,over 30. ===
-			if(count*__ITEM_ONE_TIME__>len(lst)):
-				break
-		else:
-			if((count-1)*__ITEM_ONE_TIME__>len(lst)):
-				break
+				end=count*__ITEM_ONE_TIME__
+			line()
+			for x in range(begin,end):
+				print("[ID]",x+1)
+				print("[DATE]",lst[x][2])
+				print("[URL]",lst[x][0])
+				print("[TITLE]",lst[x][1])
+				line()
+			while(1):
+				tmp=input("[INFO]Enter the id you'd like to save,[Q] to quit,[Other] to continue:")
+				if(tmp.isdigit()):
+					savedURLid=int(tmp)
+					if(savedURLid>begin and savedURLid<=end):
+						try:
+							if(lst_save.index(lst[savedURLid-1][0])>=0):
+								print("[ERROR]",lst[savedURLid-1][1],"has already added")
+						except:
+							lst_save.append([lst[savedURLid-1][0],type_id])
+							print("[ADD]",lst[savedURLid-1][1])
+					else:
+						print("[ERROR]Wrong ID!")
+				else:
+					if(tmp.lower()=="q"):
+						count=len(lst)/__ITEM_ONE_TIME__
+					break
+			count+=1
+			if(len(lst)%__ITEM_ONE_TIME__==0):# ===IF JUST OK,Compare Length;or minus one before compare ===
+			# === E.g When [len(lst)] is 30 but [__ITEM_ONE_TIME__] is 20 Then count++ means it get to 40,over 30. ===
+				if(count*__ITEM_ONE_TIME__>len(lst)):
+					break
+			else:
+				if((count-1)*__ITEM_ONE_TIME__>len(lst)):
+					break
 	line()
 	while(1):
 		tmp1=input("[INFO]Page "+str(page)+" has added,press [Y] to go on next page,[ENTER] to back:")
@@ -147,9 +152,12 @@ def fetchcontent(URL):
 	content_block=html_bs.find(class_="centen2",id="content")
 	link=[]
 	line()
+	count = 0
 	for lnk in content_block.findAll("img"):
 		# print ("http://www.522yw.cc"+lnk["src"])
-		link.append("http://www.522yw.cc"+lnk['src'])
+		count += 1
+		if count <= 50:
+			link.append("http://www.522yw.cc"+lnk['src'])
 	print ("[TITLE]",title)
 	print("[DATE]",date)
 	print("[COUNT]",str(len(link))+"P")

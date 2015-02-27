@@ -23,7 +23,7 @@ class UI:
 				optionTXT += nbsp
 				if count % 5 == 0 and count != len(options):# 5 Files Per Line
 					optionTXT += "\n"
-			else:#横向排版
+			else:#纵向排版
 				optionTXT += "[" + str(count) + "] " + item
 				if count<len(options):
 					optionTXT += "\n"

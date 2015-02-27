@@ -56,7 +56,7 @@ def Opener(cookie=""):
 		header.append(elem)
 	opener.addheaders = header
 	return opener
-def OpenURL(URL,decode=False):
+def OpenURL(URL,charset="utf-8"):
 	if(URL.startswith("http://")==0):
 		URL="http://"+URL
 	opener=Opener()
@@ -65,14 +65,16 @@ def OpenURL(URL,decode=False):
 	htmlSource=""
 	# socket=urllib.request.urlopen(URL)
 	if(htmlOriginal.startswith(b'\x1f\x8b')):
-		htmlOriginal=gzip.decompress(htmlOriginal).decode("utf-8")
-	if(decode):
-		htmlSource=htmlOriginal.decode("GBK")
-	else:
+		htmlOriginal=gzip.decompress(htmlOriginal).decode(charset)
 		htmlSource=htmlOriginal
+	else:
+		if(charset != "utf-8"):
+			htmlSource=htmlOriginal.decode(charset)
+		else:
+			htmlSource=htmlOriginal
 
 	return htmlSource
-def OpenURL_BS(URL,decode=False):
-	soup=BeautifulSoup(OpenURL(URL,decode))
+def OpenURL_BS(URL,charset="utf-8"):
+	soup=BeautifulSoup(OpenURL(URL,charset))
 	# print("BeautifulSoup"+URL+"Finished")
 	return soup
