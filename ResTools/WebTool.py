@@ -60,7 +60,7 @@ def OpenURL(URL,decode=False):
 	if(URL.startswith("http://")==0):
 		URL="http://"+URL
 	opener=Opener()
-	htmlOriginal =opener.open(URL, timeout = 1000).read()
+	htmlOriginal =opener.open(URL, timeout = 10).read()
 	# print("Access"+URL+"Finished")
 	htmlSource=""
 	# socket=urllib.request.urlopen(URL)
