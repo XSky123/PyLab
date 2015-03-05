@@ -240,8 +240,9 @@ def PiLiangAddImg():
 		print(out)
 		uploadLst =  dividePicLst(imgLst)
 
-		print [uploadLst,title,tagsInTxt]
+		# print [uploadLst,title,tagsInTxt]
 		ITEMLIST.append([uploadLst,title,tagsInTxt])
+		
 		UI.drawline()
 	for i in range(len(ITEMLIST)):
 		t = Uploader(__Q__)
@@ -250,8 +251,12 @@ def PiLiangAddImg():
 	for x in ITEMLIST:
 		__Q__.put(x)
 	__Q__.join()
+	for x in pathLst:
+		zipFolder(x.decode("utf8"),True)
+
 welcome()
-PiLiangAddImg()
+while True:
+	PiLiangAddImg()
 # while(True):
 # 	if(raw_input("* 回车直接进入目录传图:")==""):
 # 		__type__ = 1
