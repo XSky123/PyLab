@@ -2,7 +2,7 @@
 """
 *------------------------------------------------------------ 
 * Model : FileTool 
-* Version : 1.6.1
+* Version : 2.0
 * Designer : XSky123
 *
 * About UI,FileIO,zip...
@@ -10,7 +10,7 @@
 *------------------------------------------------------------
 """
 import os,sys
-import zipfile
+import zipfile,lzma
 class UI:
 	def memu(self,options,direction=0):
 		tmp=" "
@@ -93,7 +93,7 @@ def ls(path):
 	for line in fileList:
 		filePathList.append(path+line)
 	return filePathList
-def zipFolder(path):
+def zipFolder(path,isDel=False):
 	"""
 	Zip the whole folder.
 	"""
@@ -104,14 +104,30 @@ def zipFolder(path):
 	# Use "except" in case of the Folder is in the same dir with py.
 	try:
 		folderName = path.split('/')[-2]
+		parentPath = "/".join(path.split('/')[:-2])
 	except:
-		folderName = path.split('/')[-1]
-	filePathList=ls(path)
-	z = zipfile.ZipFile(path+folderName+".zip",mode='a')
+		folderName = path[:-1]
+		parentPath = path
+	filePathList = ls(path)
+	# print(folderName)
+	# print(parentPath)
+	z = zipfile.ZipFile(parentPath + '/' + folderName+".zip",mode='a',compression=zipfile.ZIP_LZMA)
 	for item in filePathList:
 		# print(item)
 		z.write(item,item.split('/')[-1])
-
+		if isDel:
+			#delete zipped file
+			os.remove(item)
+	if isDel:
+		#delete zipped dir
+		os.removedirs(path)
+def unZip(path):
+	"""
+	UnZip to the same folder with zip file
+	"""
+	folderName = os.file.basename(path).split(".")[0]
+	z = zipfile.ZipFile(path)
+	z.extractall(folderName)
 def cutTxt(path,WordsPerItem):
 	try:
 		f = open(path,"r")

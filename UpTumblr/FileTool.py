@@ -2,7 +2,7 @@
 """
 *------------------------------------------------------------ 
 * Model : FileTool 
-* Version : 1.6.1
+* Version : 2.0
 * Designer : XSky123
 *
 * About UI,FileIO,zip...
@@ -11,6 +11,8 @@
 """
 import os,sys
 import zipfile
+if sys.version_info.major == 3:
+	import lzma
 class UI:
 	def memu(self,options,direction=0):
 		tmp=" "
@@ -23,7 +25,7 @@ class UI:
 				optionTXT += nbsp
 				if count % 5 == 0 and count != len(options):# 5 Files Per Line
 					optionTXT += "\n"
-			else:#横向排版
+			else:#纵向排版
 				optionTXT += "[" + str(count) + "] " + item
 				if count<len(options):
 					optionTXT += "\n"
@@ -55,7 +57,7 @@ class UI:
 				return int(tmp)
 			else:
 				print ("* —— 等等，好像不对...")
-		print("*------------------------------------------------------------")	
+		print("*------------------------------------------------------------")
 	def drawline(self):
 		print("*------------------------------------------------------------")
 def mkdir(path):
@@ -64,14 +66,23 @@ def mkdir(path):
 	Because Linux cannot make the whole path for a time,
 	use this could solve the problem.
 	"""
-	myPath = path.split('/')
-	for i in range(1,len(myPath)):
-		myPath[i] = myPath[i-1] + '/' + myPath[i]
-	for addr in myPath:
-		if os.path.isdir(addr): 
-			pass 
-		else: 
-			os.mkdir(addr)
+	if os.path.exists(path): 
+		pass 
+	else: 
+		os.makedirs(path)
+	# myPath = path.split('/')
+	# for i in range(1,len(myPath)):
+	# 	myPath[i] = myPath[i-1] + '/' + myPath[i]
+	# 	# print("[path]"+myPath[i])
+	# del myPath[0]#delete the first path
+	# for addr in myPath:
+	# 	print("[Now Addr]"+ addr)
+	# 	if os.path.isdir(addr): 
+	# 		# print(addr)
+	# 		pass 
+	# 	else: 
+	# 		print("[md]"+addr)
+	# 		os.mkdir(addr)
 def ls(path):
 	"""
 	Get files list in complated path
@@ -84,7 +95,7 @@ def ls(path):
 	for line in fileList:
 		filePathList.append(path+line)
 	return filePathList
-def zipFolder(path):
+def zipFolder(path,isDel=False):
 	"""
 	Zip the whole folder.
 	"""
@@ -95,14 +106,33 @@ def zipFolder(path):
 	# Use "except" in case of the Folder is in the same dir with py.
 	try:
 		folderName = path.split('/')[-2]
+		parentPath = "/".join(path.split('/')[:-2])
 	except:
-		folderName = path.split('/')[-1]
-	filePathList=ls(path)
-	z = zipfile.ZipFile(path+folderName+".zip",mode='a')
+		folderName = path[:-1]
+		parentPath = path
+	filePathList = ls(path)
+	
+	# under python3.3 doesnt support lzma 
+	if sys.version_info.major == 2:
+		z = zipfile.ZipFile(parentPath + '/' + folderName+".zip",mode='a',compression=zipfile.ZIP_DEFLATED)
+	else:
+		z = zipfile.ZipFile(parentPath + '/' + folderName+".zip",mode='a',compression=zipfile.ZIP_LZMA)
 	for item in filePathList:
 		# print(item)
 		z.write(item,item.split('/')[-1])
-
+		if isDel:
+			#delete zipped file
+			os.remove(item)
+	if isDel:
+		#delete zipped dir
+		os.removedirs(path)
+def unZip(path):
+	"""
+	UnZip to the same folder with zip file
+	"""
+	folderName = os.file.basename(path).split(".")[0]
+	z = zipfile.ZipFile(path)
+	z.extractall(folderName)
 def cutTxt(path,WordsPerItem):
 	try:
 		f = open(path,"r")

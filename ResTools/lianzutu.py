@@ -110,35 +110,22 @@ def get_Everylink(typeid,baseURL):
     return links
 
 class Downloader(threading.Thread):
-    def __init__(self,queue,path,isFirst=0):
+    def __init__(self,queue,path):
         threading.Thread.__init__(self)
         self.queue = queue
         self.path = path
-        self.isFirst = isFirst
     def run(self):
         URL = self.queue.get()
         fName = URL.split("/")[-1]
-        # FileTool.mkdir(self.path)
-        # with open("./" + self.path + "/" + fName, 'wb') as file:          
-        #             image_data = WebTool.OpenURL(URL)
-        #             file.write(image_data)
         try:
             with open("./" + self.path + "/" +fName, 'wb') as file:          
                     image_data = WebTool.OpenURL(URL)
                     file.write(image_data)
                     print("    [FINISH]",URL)
         except Exception as e:
-            # print("    [ERR]"+URL)
             print (e)
             __ERRList__.append([self.path,URL])
 
-        # urllib.request.urlretrieve(URL,self.path + "/" + fName)
-        # try:
-        #     urllib.request.urlretrieve(URL,self.path + "/" + fName)
-        #     print("    [FINISH]",URL)
-        # except:
-        #     print("    [ERR]"+URL)
-        #     __ERRList__.append([self.path,URL])
         self.queue.task_done()
 
 def get_Item(URL):
@@ -152,10 +139,7 @@ def get_Item(URL):
     myCount = len(myImg)
 
     myPath = "lianzutu/" + myType +"/" + myTitle
-    if os.path.exists(myPath): 
-            # print("已存在!") 
-        pass
-    else: 
+    if not os.path.exists(myPath): # print("已存在!") 
         os.makedirs(myPath)
 
     print("[标题]" + myTitle)
@@ -164,10 +148,7 @@ def get_Item(URL):
 
     print("* 开始下载...")
     for i in range(len(myImg)):
-        if i==0:
-            t = Downloader(__QUEUE__,myPath,1)
-        else:
-            t = Downloader(__QUEUE__,myPath,0)
+        t = Downloader(__QUEUE__,myPath)
         t.setDaemon(True)
         t.start()
     for url in myImg:

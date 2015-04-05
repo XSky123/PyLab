@@ -1,23 +1,53 @@
 from WebTool import *
 from FileTool import *
+import xskysql
+import socket
+import threading,queue
 import time,os
 import re
+timeout = 10
+socket.setdefaulttimeout(timeout)
+#TimeOut
 UI = UI()
+__QUEUE__ = queue.Queue()
+__ERRList__ = []
+
 def welcome():
 	print ("""*------------------------------------------------------------ 
 * Programe : 贴吧萌萌哒(CuteTieba) 
-* Version : 1.0
+* Version : 2.0.3
 * Designer : XSky123
 *
 * I hope you enjoy this Programe! 
 * 伦家会努力让你喜欢的～喵～～
 *------------------------------------------------------------""")
+
+class Downloader(threading.Thread):
+	def __init__(self,queue,path,count):
+		threading.Thread.__init__(self)
+		self.queue = queue
+		self.path = path
+		self.count = count
+
+	def run(self):
+		URL = self.queue.get()
+		filename = str(self.count) + '.jpg'
+		filePath = self.path + '/' + filename
+		try:
+			urllib.request.urlretrieve(URL,filePath)
+			# xskysql.write(self.title,filename,URL,filePath)
+		except Exception as e:
+			print (e)
+			__ERRList__.append([self.path,self.count,URL])
+		self.queue.task_done()
+
 class CuteTieba:
 	# initialize
 	def __init__(self,postID):
 		self.baseURL =  "http://tieba.baidu.com/p/" + str(postID) + "?see_lz=1"
 		self.myPage = OpenURL(self.baseURL)
 		self.title = self.getTitle(self.myPage)
+		self.path = 'tieba/' + self.title
 		self.endPage = self.getPage(self.myPage)
 		self.author = self.getAuthor(self.myPage)
 		print("*------------------------------------------------------------")
@@ -30,7 +60,9 @@ class CuteTieba:
 	def CuteImg(self):
 		ImgList = self.getData(1,self.myPage,self.endPage)
 		self.downImg(self.title,ImgList)
+		# self.zipImg(self.path)
 		print("* Download finished!")
+
 	def CuteTxt(self):
 		rawData = self.getData(2,self.myPage,self.endPage)
 		self.downTxt(self.title,rawData)
@@ -60,7 +92,8 @@ class CuteTieba:
 		OriLst = Page.find_all(class_="BDE_Image")
 		Lst = []
 		for addr in OriLst:
-			Lst.append(addr["src"])
+			Lst.append("http://imgsrc.baidu.com/forum/pic/item/"+addr["src"].split("/")[-1])
+			# Lst.append(addr["src"])
 		return Lst
 	def getDataGroup(self,myPage):
 		Page = BeautifulSoup(myPage)
@@ -99,34 +132,79 @@ class CuteTieba:
 		if(tmp!=None):
 			author = tmp.text
 		else:
-		    print ('Author Not Found!')
+			print ('Author Not Found!')
 		return author
 	def downImg(self,title,ImgList):
 		print("* Begin downloading...")
-		path = 'tieba/img/' + title
+		path = self.path
 		mkdir(path)
-		count = 0
-		#Need to add threading
-		#Need to have sleep() in each threading
+		count = 1
+		for i in range(len(ImgList)):
+			t = Downloader(__QUEUE__,path,count)
+			t.setDaemon(True)
+			t.start()
+			count += 1
 		for item in ImgList:
-			urllib.request.urlretrieve(item,'tieba/img/'+title+'/%s.jpg' % count)
-			count+=1
+			__QUEUE__.put(item)
+		__QUEUE__.join()
+		xskysql.write(self.title,"",self.baseURL,os.getcwd()+'/'+self.path)
+		self.dealERR()
 	def downTxt(self,title,rawData):
 		path = 'tieba/txt/'
 		mkdir(path)
 		f = open(path + title + '.txt','w+')
 		f.writelines(rawData)
 		f.close()
+	def zipImg(self,path):
+		zipFolder(path)
+	def dealERR(self):
+		while len(__ERRList__) >0:
+			tmp = input("* 尝试再次下载失败的项目?[Enter] to start.[other] to quit:")
+			if tmp == "":
+				for x in __ERRList__:
+					t = Downloader(__QUEUE__,x[0],x[1])
+					t.setDaemon(True)
+					t.start()
+					__QUEUE__.put(x[2])
+					__ERRList__.remove(x)
+				# for i in range(len(__ERRList__)):
+				# 	print(__ERRList__[i])
+				# 	t = Downloader(__QUEUE__,__ERRList__[i][0],__ERRList__[i][1])
+				# 	t.setDaemon(True)
+				# 	t.start()
+				# 	__QUEUE__.put(__ERRList__[i][2])
+				# 	del(__ERRList__[i])
+				__QUEUE__.join()
+			else:
+				print("[ERR Files]")
+				for item in __ERRList__:
+					print("[Path]" + item[0])
+					print("[URL]" + item[2])
+					UI.drawline()
+				break
 welcome()
 while (True):
-	postID = input('Enter ID:')
+	ID = []
+	while(True):
+		postID = input('ID or URL(空行退出):')
+		if not postID.isdigit():
+			if postID.startswith("http://"):
+				postID = postID.split("/")[-1]
+			elif(postID == "" and len(ID) > 0):
+				break
+			else:
+				print("* 输入有误！")
+				continue
+		ID.append(postID)
 	#str(postID) has been added in __init__()
 	print("* 请选择类别")
 	if(UI.memu(["美图美美哒","文字萌萌哒"])==1):
-		cutetieba = CuteTieba(postID)
-		cutetieba.CuteImg()
+		for x in ID:
+			cutetieba = CuteTieba(x)
+			cutetieba.CuteImg()
 	else:
-		cutetieba = CuteTieba(postID)
-		cutetieba.CuteTxt()
+		for x in ID:
+			cutetieba = CuteTieba(x)
+			cutetieba.CuteTxt()
 	input("* Press To Continue *")
 	print("*------------------------------------------------------------")
